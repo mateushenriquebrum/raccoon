@@ -9,5 +9,7 @@ defmodule Raccoon do
     |> Map.new(fn {k, v} -> {k, Regex.replace(~r/R\$/i, v, "")} end)
     |> Map.new(fn {k, v} -> {k, Regex.replace(~r/€/i, v, "")} end)
     |> Map.new(fn {k, v} -> {k, Regex.replace(~r/\$/i, v, "")} end)
+    |> Map.new(fn {k, v} -> {k, Regex.replace(~r/\.([0-9])$/i, v, ".\\g{1}0")} end)
+    |> Map.new(fn {k, v} -> {k, Regex.replace(~r/,([0-9])$/i, v, ",\\g{1}0")} end)
   end
 end
