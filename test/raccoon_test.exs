@@ -9,4 +9,12 @@ defmodule RaccoonTest do
              :bank => "SANTANDER"
            }
   end
+
+  test "should remove currencies" do
+    assert normalize(%{:real => "R$2,00", :dollar => "$5.00", :euro => "€7,00"}) == %{
+             :real => "2,00",
+             :dollar => "5.00",
+             :euro => "7,00"
+           }
+  end
 end

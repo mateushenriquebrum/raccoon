@@ -5,6 +5,9 @@ defmodule Raccoon do
 
   def normalize(row) do
     row
-    |> Map.map(fn {_, value} -> String.upcase(value) end)
+    |> Map.new(fn {k, v} -> {k, String.upcase(v)} end)
+    |> Map.new(fn {k, v} -> {k, Regex.replace(~r/R\$/i, v, "")} end)
+    |> Map.new(fn {k, v} -> {k, Regex.replace(~r/€/i, v, "")} end)
+    |> Map.new(fn {k, v} -> {k, Regex.replace(~r/\$/i, v, "")} end)
   end
 end
