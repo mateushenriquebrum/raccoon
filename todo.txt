@@ -1,24 +1,17 @@
-Load both set
-Normalisation
 Partition
-Hash Matching (Fast Exact Match)
-(Is there something here to lead to the best global approach?)
-Fuzzy Matching (Conflict Resolution)
-Probabilistic Data Linkage/Hungarian Algorithm (Conflict Resolution)
-Manual Review (Conflict Resolution)
-
 
 Normalization
-Upper case
-Remove currency
-Float point with 2 digits
+*Upper case
+*Remove currency
+*Float point with 2 digits
 
 Comparation Structure
 Many to many structure relating left and right
+Bloom Filter
 
 Hash Matching
 Reduce all the row to delimited concatenated of values
-Hash MD5????
+Hash xxHash
 
 Conflict Resolution
 Fuzzy Matching
