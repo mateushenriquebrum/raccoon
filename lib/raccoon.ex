@@ -18,4 +18,11 @@ defmodule Raccoon do
     # float point with 2 digits
     |> Map.new(fn {k, v} -> {k, Regex.replace(~r/,([0-9])$/i, v, ",\\g{1}0")} end)
   end
+
+  def hash(row, only) do
+    row
+    |> Map.values()
+    |> Enum.sort()
+    |> Enum.join("|")
+  end
 end

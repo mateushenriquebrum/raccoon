@@ -24,4 +24,8 @@ defmodule RaccoonTest do
              :real => "666.555,50"
            }
   end
+
+  test "calculate hash from row" do
+    assert hash(%{:des => "grocery", :amount => "55555.99"}, %{}) == "55555.99|grocery"
+  end
 end
