@@ -3,6 +3,7 @@ defmodule Raccoon do
   Documentation for `Raccoon`.
   """
 
+  @spec normalize(map()) :: map()
   def normalize(row) do
     row
     # upper case everything
@@ -19,6 +20,7 @@ defmodule Raccoon do
     |> Map.new(fn {k, v} -> {k, Regex.replace(~r/,([0-9])$/i, v, ",\\g{1}0")} end)
   end
 
+  @spec hash(map(), list()) :: String.t()
   def hash(row, only) do
     row
     |> Map.filter(fn {k, _} -> k in only end)
