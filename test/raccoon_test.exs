@@ -26,12 +26,19 @@ defmodule RaccoonTest do
   end
 
   test "calculate hash from row" do
-    assert hash(%{:des => "grocery", :amount => "55555.99"}, [:des, :amount]) ==
+    assert hash(%{:des => "grocery", :amount => "55555.99"}) ==
              "55555.99|grocery"
   end
 
-  test "exclude calculate hash from row" do
-    assert hash(%{:des => "grocery", :amount => "55555.99"}, [:des]) ==
-             "grocery"
+  test "two non-normilized rows matches" do
+    left = %{:des => "insurance", :amount => "66.00"}
+    right = %{:des => "insurance", :amount => "66.00"}
+    assert match(left, right) == %{:hash => 100}
+  end
+
+  test "two normilized rows matches" do
+    left = %{:des => "Insurance", :amount => "66.00"}
+    right = %{:des => "insurance", :amount => "66.0"}
+    assert match(left, right) == %{:hash => 100}
   end
 end

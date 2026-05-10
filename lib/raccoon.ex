@@ -20,12 +20,19 @@ defmodule Raccoon do
     |> Map.new(fn {k, v} -> {k, Regex.replace(~r/,([0-9])$/i, v, ",\\g{1}0")} end)
   end
 
-  @spec hash(map(), list()) :: String.t()
-  def hash(row, only) do
+  @spec hash(map()) :: String.t()
+  def hash(row) do
     row
-    |> Map.filter(fn {k, _} -> k in only end)
     |> Map.values()
     |> Enum.sort()
     |> Enum.join("|")
+  end
+
+  def match(left, right) do
+    if hash(normalize(left)) == hash(normalize(right)) do
+      %{:hash => 100}
+    else
+      %{:hash => 0}
+    end
   end
 end
