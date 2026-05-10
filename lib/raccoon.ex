@@ -21,6 +21,7 @@ defmodule Raccoon do
 
   def hash(row, only) do
     row
+    |> Map.filter(fn {k, _} -> k in only end)
     |> Map.values()
     |> Enum.sort()
     |> Enum.join("|")

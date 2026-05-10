@@ -26,6 +26,12 @@ defmodule RaccoonTest do
   end
 
   test "calculate hash from row" do
-    assert hash(%{:des => "grocery", :amount => "55555.99"}, %{}) == "55555.99|grocery"
+    assert hash(%{:des => "grocery", :amount => "55555.99"}, [:des, :amount]) ==
+             "55555.99|grocery"
+  end
+
+  test "exclude calculate hash from row" do
+    assert hash(%{:des => "grocery", :amount => "55555.99"}, [:des]) ==
+             "grocery"
   end
 end
