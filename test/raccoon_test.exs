@@ -30,15 +30,41 @@ defmodule RaccoonTest do
              "55555.99|grocery"
   end
 
-  test "two non-normilized rows matches" do
-    left = %{:des => "insurance", :amount => "66.00"}
-    right = %{:des => "insurance", :amount => "66.00"}
-    assert match(left, right) == %{:hash => 100}
+  test "recociliation exactly matchs" do
+    left_set = %{
+      200 => %{:des => "Insurance", :amount => "66.00"},
+      300 => %{:des => "Groceries", :amount => "90.0"}
+    }
+
+    right_set = %{
+      10 => %{:des => "groceries", :amount => "90.00"},
+      11 => %{:des => "INSURANCE", :amount => "66.0"}
+    }
+
+    expected = [
+      %{100 => %{200 => 11, 300 => 10}}
+    ]
+
+    assert reconciliate(left_set, right_set) == expected
   end
 
-  test "two normilized rows matches" do
-    left = %{:des => "Insurance", :amount => "66.00"}
-    right = %{:des => "insurance", :amount => "66.0"}
-    assert match(left, right) == %{:hash => 100}
+  test "fuzz" do
+    left_set = %{
+      200 => %{:des => "Insurance", :amount => "66.00"},
+      300 => %{:des => "Groceries", :amount => "90.0"},
+      500 => %{:des => "Bills", :amount => "550.0"}
+    }
+
+    right_set = %{
+      10 => %{:des => "groceries", :amount => "90.00"},
+      11 => %{:des => "INSURANCE", :amount => "66.0"}
+    }
+
+    expected = [
+      %{100 => %{200 => 11, 300 => 10}},
+      %{52 => %{500 => 10}}
+    ]
+
+    assert reconciliate_fuzz(left_set, right_set) == expected
   end
 end
