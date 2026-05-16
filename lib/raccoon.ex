@@ -47,38 +47,59 @@ defmodule Raccoon do
     [%{100 => reconciliated}]
   end
 
+  def fuzz(l, r) do
+    round(ExFuzzywuzzy.Similarity.Levenshtein.calculate(l, r) * 100)
+  end
+
+  def max_by_score(xs) do
+    xs |> Enum.max_by(fn {_, _, s} -> s end)
+  end
+
   # ON^2
   def reconciliate_fuzz(left_set, right_set) do
-    norm_left_set =
-      left_set
-      |> Map.new(fn {i, s} -> {i, s |> normalize |> hash} end)
+    norm_left_content = for {id, content} <- left_set, do: {id, content |> normalize |> hash}
+    norm_right_content = for {id, content} <- right_set, do: {id, content |> normalize |> hash}
 
-    norm_right_set =
-      right_set
-      |> Map.new(fn {i, s} -> {i, s |> normalize |> hash} end)
-
+    IO.inspect(norm: norm_left_content)
     # make combination
-    all_possible_pairs = for l <- norm_left_set, r <- norm_right_set, do: {l, r}
-    IO.inspect(pairs: all_possible_pairs)
-    # group by first index
-    grouped = all_possible_pairs |> Enum.group_by(fn {{l, _}, _} -> l end)
-    IO.inspect(grouped: grouped)
 
-    scores =
-      grouped
-      |> Map.new(fn {li, lrs} ->
-        {li,
-         lrs
-         |> Enum.map(fn {{_, lb}, {ri, rb}} ->
-           {ri, round(ExFuzzywuzzy.Similarity.Levenshtein.calculate(lb, rb) * 100)}
-         end)}
-      end)
+    pared_with_scores =
+      for {l_id, l_content} <- norm_left_content,
+          {r_id, r_content} <- norm_right_content,
+          do: {l_id, r_id, fuzz(l_content, r_content)}
 
-    IO.inspect(scores: scores)
+    IO.inspect(pairs: pared_with_scores)
+
+    grouped_by_left = pared_with_scores |> Enum.group_by(fn {l, _, _} -> l end)
+    IO.inspect(grouped: grouped_by_left)
+
+    highest_score = for {_, xs} <- grouped_by_left, do: max_by_score(xs)
+
+    IO.inspect(highest: highest_score)
+
+    # # score
+    # scored =
+    #   IO.inspect(score: scored)
+
+    # # group by first index
+    # grouped = all_possible_pairs |> Enum.group_by(fn {{l, _}, _} -> l end)
+    # IO.inspect(grouped: grouped)
+
+    # scores =
+    #   grouped
+    #   |> Map.new(fn {li, lrs} ->
+    #     {li,
+    #      lrs
+    #      |> Enum.map(fn {{_, lb}, {ri, rb}} ->
+    #        {ri, round(ExFuzzywuzzy.Similarity.Levenshtein.calculate(lb, rb) * 100)}
+    #      end)}
+    #   end)
+
+    # IO.inspect(scores: scores)
     # order scores values by second element of tuble
 
     # tranforme to left index => maximun element in values (first tuple)
 
-    ## ExFuzzywuzzy.ratio(norm_left_set, norm_right_set)
+    ## ExFuzzywuzzy.ratio(norm_left_content, norm_right_content)
   end
 end

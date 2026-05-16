@@ -67,4 +67,8 @@ defmodule RaccoonTest do
 
     assert reconciliate_fuzz(left_set, right_set) == expected
   end
+
+  test "max of comparation by score" do
+    assert {1, 3, 100} == max_by_score([{1, 1, 0}, {1, 2, 50}, {1, 3, 100}])
+  end
 end
