@@ -41,14 +41,12 @@ defmodule RaccoonTest do
       11 => %{:des => "INSURANCE", :amount => "66.0"}
     }
 
-    expected = [
-      %{100 => %{200 => 11, 300 => 10}}
-    ]
+    expected = %{100 => [{200, 11}, {300, 10}]}
 
     assert reconciliate(left_set, right_set) == expected
   end
 
-  test "fuzz" do
+  test "reconciliate all left and right" do
     left_set = %{
       200 => %{:des => "Insurance", :amount => "66.00"},
       300 => %{:des => "Groceries", :amount => "90.0"},
@@ -60,12 +58,12 @@ defmodule RaccoonTest do
       11 => %{:des => "INSURANCE", :amount => "66.0"}
     }
 
-    expected = [
-      %{100 => %{200 => 11, 300 => 10}},
-      %{52 => %{500 => 10}}
-    ]
+    expected = %{
+      52 => [{500, 10}],
+      100 => [{200, 11}, {300, 10}]
+    }
 
-    assert reconciliate_fuzz(left_set, right_set) == expected
+    assert reconciliate(left_set, right_set) == expected
   end
 
   test "max of comparation by score" do
