@@ -30,23 +30,6 @@ defmodule Raccoon do
     |> Enum.join("|")
   end
 
-  # def reconciliate(left_set, right_set) do
-  #   hash_left_set =
-  #     left_set
-  #     |> Map.new(fn {i, s} -> {s |> normalize |> hash, i} end)
-
-  #   hash_right_set =
-  #     right_set
-  #     |> Map.new(fn {i, s} -> {s |> normalize |> hash, i} end)
-
-  #   reconciliated =
-  #     Map.intersect(hash_left_set, hash_right_set, fn _, l, r -> {l, r} end)
-  #     |> Map.values()
-  #     |> Map.new()
-
-  #   [%{100 => reconciliated}]
-  # end
-
   def fuzz(l, r) do
     round(ExFuzzywuzzy.Similarity.Levenshtein.calculate(l, r) * 100)
   end
@@ -56,6 +39,7 @@ defmodule Raccoon do
   end
 
   # ON^2
+  # Performance improve: Select and remove the exactly match using hash(left) == hash(right) to skip fuzz computation
   def reconciliate(left_set, right_set) do
     norm_left_content = for {id, content} <- left_set, do: {id, content |> normalize |> hash}
     norm_right_content = for {id, content} <- right_set, do: {id, content |> normalize |> hash}
